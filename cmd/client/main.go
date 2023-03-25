@@ -13,6 +13,7 @@ import (
 var (
 	destination string
 	fingerprint string
+	proxy string
 	ignoreInput string
 )
 
@@ -26,7 +27,7 @@ func printHelp() {
 func main() {
 
 	if len(os.Args) == 0 || ignoreInput == "true" {
-		Run(destination, fingerprint, "")
+		Run(destination, fingerprint, proxy)
 		return
 	}
 

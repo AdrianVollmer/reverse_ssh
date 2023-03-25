@@ -6,6 +6,10 @@ ifdef RSSH_FINGERPRINT
 	LDFLAGS += -X main.fingerprint=$(RSSH_FINGERPRINT)
 endif
 
+ifdef RSSH_PROXY
+	LDFLAGS += -X main.proxy=$(RSSH_PROXY)
+endif
+
 ifdef IGNORE
 	LDFLAGS += -X main.ignoreInput=$(IGNORE)
 endif
