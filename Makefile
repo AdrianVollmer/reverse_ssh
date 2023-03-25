@@ -23,24 +23,26 @@ LDFLAGS += -X 'github.com/NHAS/reverse_ssh/internal.Version=$(shell git describe
 
 LDFLAGS_RELEASE = $(LDFLAGS) -s -w
 
+BUILD_FLAGS := -trimpath
+
 debug: .generate_keys
-	go build -ldflags="$(LDFLAGS)" -o bin ./...
-	GOOS=windows GOARCH=amd64 go build -ldflags="$(LDFLAGS)" -o bin ./cmd/client
+	go build $(BUILD_FLAGS) -ldflags="$(LDFLAGS)" -o bin ./...
+	GOOS=windows GOARCH=amd64 go build $(BUILD_FLAGS) -ldflags="$(LDFLAGS)" -o bin ./cmd/client
 
 release: .generate_keys
-	go build -ldflags="$(LDFLAGS_RELEASE)" -o bin ./...
-	GOOS=windows GOARCH=amd64 go build -ldflags="$(LDFLAGS_RELEASE)" -o bin ./cmd/client
+	go build $(BUILD_FLAGS) -ldflags="$(LDFLAGS_RELEASE)" -o bin ./...
+	GOOS=windows GOARCH=amd64 go build $(BUILD_FLAGS) -ldflags="$(LDFLAGS_RELEASE)" -o bin ./cmd/client
 
 client: .generate_keys
-	go build -ldflags=" $(LDFLAGS_RELEASE)" -o bin ./cmd/client
+	go build $(BUILD_FLAGS) -ldflags=" $(LDFLAGS_RELEASE)" -o bin ./cmd/client
 
 client_dll: .generate_keys
 	test -n "$(RSSH_HOMESERVER)" # Shared objects cannot take arguments, so must have a callback server baked in (define RSSH_HOMESERVER)
-	CGO_ENABLED=1 go build -tags=cshared -buildmode=c-shared -ldflags="$(LDFLAGS_RELEASE)" -o bin/client.dll ./cmd/client
+	CGO_ENABLED=1 go build $(BUILD_FLAGS) -tags=cshared -buildmode=c-shared -ldflags="$(LDFLAGS_RELEASE)" -o bin/client.dll ./cmd/client
 
 server:
 	mkdir -p bin
-	go build -ldflags="-s -w" -o bin ./cmd/server
+	go build $(BUILD_FLAGS) -ldflags="-s -w" -o bin ./cmd/server
 
 .generate_keys:
 	mkdir -p bin
