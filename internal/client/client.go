@@ -43,7 +43,7 @@ func Connect(addr, proxy string, timeout time.Duration) (conn net.Conn, err erro
 
 		proxyCon, err := net.DialTimeout("tcp", proxy, timeout)
 		if err != nil {
-			return conn, err
+			return proxyCon, err
 		}
 
 		if tcpC, ok := proxyCon.(*net.TCPConn); ok {
@@ -57,7 +57,7 @@ func Connect(addr, proxy string, timeout time.Duration) (conn net.Conn, err erro
 
 		err = WriteHTTPReq(req, proxyCon)
 		if err != nil {
-			return conn, fmt.Errorf("Unable to connect proxy %s", proxy)
+			return proxyCon, fmt.Errorf("Unable to connect proxy %s", proxy)
 		}
 
 		var responseStatus []byte
@@ -65,7 +65,7 @@ func Connect(addr, proxy string, timeout time.Duration) (conn net.Conn, err erro
 			b := make([]byte, 1)
 			_, err := proxyCon.Read(b)
 			if err != nil {
-				return conn, fmt.Errorf("Reading from proxy failed")
+				return proxyCon, fmt.Errorf("Reading from proxy failed")
 			}
 			responseStatus = append(responseStatus, b...)
 
